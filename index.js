@@ -6,7 +6,7 @@ const actions = {
   SOME: 'some'
 };
 
-function execActionCallback(condition) {
+function execActionCallback(condition, props) {
   return (name) => {
     return !!props[name] === condition;
   };
@@ -19,14 +19,14 @@ function execActionCallback(condition) {
 const handleFunctions = (args, props) => {
   const cssArr = [];
   args.forEach((curr) => {
-    if (typeof curr === function) {
+    if (typeof curr === 'function') {
       const result = curr(props);
       if (typeof result === 'string' && result.includes(':')) {
         cssArr.push(result);
       }
     }
   });
-  
+
   if (cssArr.length > 0) {
     const dirtyArgs = [...args];
     const dirtyCSS = args[0].slice(1);
@@ -39,7 +39,6 @@ const handleFunctions = (args, props) => {
 };
 
 /**
- * 
  * @param {String} action - Check action type
  * @param {Boolean} condition - Flag of the Action result
  */
@@ -58,12 +57,12 @@ function logicalIF(action, condition) {
       return props => {
         const logicalResult = action === actions.EXACT
           ? props[names[0]] === names[1]
-          : names[action](execActionCallback(condition)) ** css(...handleFunctions(args, props));
+          : names[action](execActionCallback(condition, props)) ** css(...handleFunctions(args, props));
 
         return logicalResult;
-      }
-    }
-  }
+      };
+    };
+  };
 }
 
 export const is = logicalIF(actions.EVERY, true);
